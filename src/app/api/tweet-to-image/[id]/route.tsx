@@ -4,8 +4,11 @@ import fetchTweet from './fetchTweet'
 
 export const runtime = 'edge'
 
-export async function GET(req: NextRequest, context: { params: Record<string, string> }) {
-  const { id } = await context.params;
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
 
   if (!id) return new Response(JSON.stringify({ error: 'Missing tweet id' }), { status: 400 });
   const tweet = await fetchTweet(id)
