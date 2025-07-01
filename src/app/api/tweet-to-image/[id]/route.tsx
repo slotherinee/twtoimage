@@ -18,7 +18,9 @@ export async function GET(
   const fontSize = 15;
   const lineHeight = 1.3125 * fontSize;
   const charsPerLine = 50;
-  const textLines = text.split('\n').map((line: string) => Math.ceil(line.length / charsPerLine)).reduce((a: number, b: number) => a + b, 0);
+  const textLines = text.split('\n').map((line: string) => {
+    return Math.max(1, Math.ceil(line.length / charsPerLine));
+  }).reduce((a: number, b: number) => a + b, 0);
   const textBlockHeight = textLines * lineHeight;
   const authorBlockHeight = 15 * 1.2 * 2 + 12;
   const avatarHeight = 40;
