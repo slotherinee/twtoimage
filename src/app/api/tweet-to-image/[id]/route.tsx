@@ -8,11 +8,17 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
+  try {
+    const { id } = await params;
 
-  if (!id) return new Response(JSON.stringify({ error: 'Missing tweet id' }), { status: 400 });
-  const tweet = await fetchTweet(id)
-  const { text, author, authorAvatar, authorNickname } = tweet
+    if (!id) return new Response(JSON.stringify({ error: 'Missing tweet id' }), { status: 400 });
+    
+    const tweet = await fetchTweet(id)
+    const { text, author, authorAvatar, authorNickname } = tweet
+
+    if (!text || !author) {
+      return new Response(JSON.stringify({ error: 'Invalid tweet data' }), { status: 404 });
+    }
 
   const width = 556;
   const fontSize = 15;
@@ -85,4 +91,14 @@ export async function GET(
       height
     }
   )
+  } catch (error) {
+    console.error('Error generating tweet image:', error);
+    return new Response(JSON.stringify({ 
+      error: 'Failed to generate tweet image',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    }), { 
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 }
