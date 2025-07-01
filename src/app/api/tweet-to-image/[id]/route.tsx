@@ -4,8 +4,8 @@ import fetchTweet from './fetchTweet'
 
 export const runtime = 'edge'
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = (await params);
+export async function GET(req: NextRequest, context: { params: Record<string, string> }) {
+  const { id } = await context.params;
 
   if (!id) return new Response(JSON.stringify({ error: 'Missing tweet id' }), { status: 400 });
   const tweet = await fetchTweet(id)
@@ -38,6 +38,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         boxSizing: 'border-box',
         color: '#0f1419'
       }}>
+        { /* eslint-disable-next-line @next/next/no-img-element */ }
         <img src={authorAvatar} width={40} height={40} alt={`${author} avatar`} style={{ 
           borderRadius: '50%',
           flexShrink: 0
